@@ -1,2 +1,2 @@
 # javaScript-
-javaScript设计模式示例
+javaScript设计模式示例代码

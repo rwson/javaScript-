@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="../../../common/commonUtil.js"></script>
+    <script>
+        /**
+         * 适配器模式
+         *
+         *  举个栗子：
+         *      老式台式机 F32(圆孔接口)    新式台式机(USB)
+         *      老电脑鼠标,键盘(圆孔接口)   <--------------->   新式电脑接口(USB)
+         *
+         *  简单的适配器
+         *
+         */
+
+        var obj = {
+            "attr1":"111",
+            "attr2":"222",
+            "attr3":"333"
+        };
+        //  老电脑
+
+        function adapter(obj){
+            interfaceMethod(obj["attr1"],obj["attr2"],obj["attr3"]);
+        }
+        //  适配器方法
+
+        function interfaceMethod(x,y,z){
+            //  内部一些复杂的操作
+        }
+        //  新电脑
+
+    </script>
+</head>
+<body>
+</body>
+</html>

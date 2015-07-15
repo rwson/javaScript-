@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta http-eqiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <!--如果IE用户安装了Chrome Frame插件，则使用这个插件渲染页面，否则用IE最新的、最好的引擎来渲染页面-->
+    <title></title>
+</head>
+<body>
+<script type="text/javascript">
+    //  javaScript中定义接口
+    //  定义描述    属性检测    鸭式辨型
+
+    //  鸭式辨型
+    //  核心：一个类的实现接口的主要目的,把接口里的方法都实现
+    //  优点：完全面向对象
+
+    //  1、接口类
+    /**
+     *
+     * @param name      接口名,字符串
+     * @param methods   需要实现的方法,接收方法的集合、数组
+     * @constructor
+     * 接口类
+     */
+    function Interface(name,methods){
+        //  判断接口的参数个数
+        if(arguments.length != 2){
+            throw new Error("this instance interface constructor required 2 arguments!");
+        }
+        this.name = name;
+        this.methods = [];
+        //  定义一个空数组,等待接收methods里面的方法名
+        for(var i = 0,len = methods.length; i < len; i ++){
+            if(typeof methods[i] !== "string"){
+                throw new Error("the Instance method name is error!");
+            }
+            this.methods.push(methods[i]);
+        }
+    }
+
+    /**
+     *
+     * @param object
+     *
+     * 检验方法,如果通过,不做任何操作,否则抛出异常
+     */
+    Interface.ensureImplement = function(object){
+        //  至少得实现一个接口
+        if(arguments.length < 2){
+            throw new Error("Interface.ensureImplement constructor arguments must be 2 or more arguments!");
+        }
+        //  获得接口实例对象
+        for(var i = 1,len = arguments.length;i < len;i ++){
+            var instanceInterface = arguments[i];
+            //  判断参数是否为接口类的
+            //  if(instanceInterface instanceof Interface){}
+//            if(instanceInterface.constructor !== Interface){
+            if(!(instanceInterface instanceof Interface)){
+                throw new Error("the arguments" + instanceInterface + "is not an instance of Interface Class");
+            }
+            //  循环接口实例对象里面的每个方法
+            for(var j = 0; j < instanceInterface.methods.length;j ++){
+                var methodName = instanceInterface.methods[j];
+                //  接收每个方法的名字(字符串)
+                if(!arguments[0][methodName] || typeof arguments[0][methodName] !== "function"){
+                    throw new Error("the method "+ methodName +" is not found");
+                }
+                //  不存在或者不是方法类型
+            }
+        }
+    };
+
+    //  实例化接口对象
+    var CompsiteInterface = new Interface("CompsiteInterface",["add","remove"]),
+        FormInteInterface = new Interface("FormInteInterface",["update","select"]);
+
+    //  具体实现类
+    function CompsiteImpl(){
+
+    }
+    //  实现接口
+    CompsiteImpl.prototype = {
+        "constructor":CompsiteImpl,
+        add:function(){
+            console.log("add 方法");
+        },
+        remove:function(){},
+        update:function(){},
+        select:function(){}
+    };
+
+    //  检验接口里的方法
+    var c1 = new CompsiteImpl(c1,CompsiteInterface,FormInteInterface);
+
+    Interface.ensureImplement(c1,CompsiteInterface,FormInteInterface);
+
+    c1.add();
+
+</script>
+</body>
+</html>

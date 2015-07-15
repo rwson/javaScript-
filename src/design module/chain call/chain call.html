@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script type="text/javascript">
+
+        //  链式调用
+
+        function Dog(){
+            this.run = function(){
+                console.log("dog is run...");
+                return this;
+                //  把当前调用对象(Dog的一个实例)作为返回值
+            };
+            this.eat = function(){
+                console.log("dog is eat...");
+                return this;
+                //  同上
+            };
+            this.sleep = function(){
+                console.log("dog is sleep...");
+                return this;
+                //  同上
+            };
+        }
+
+        var dog = new Dog();
+        dog.run().eat().sleep();
+
+
+
+    </script>
+</head>
+<body>
+
+</body>
+</html>

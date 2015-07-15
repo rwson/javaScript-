@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta http-eqiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <!--如果IE用户安装了Chrome Frame插件，则使用这个插件渲染页面，否则用IE最新的、最好的引擎来渲染页面-->
+    <title></title>
+</head>
+<body>
+<script type="text/javascript">
+    //  javaScript中定义接口
+    //  定义描述    属性检测    鸭式辨型
+
+    //  属性检测
+    /**
+     *  interface Compsite{
+     *      function add();
+     *      function remove();
+     *      function update();
+     *  }
+     *
+     *  interface FormItem{
+     *      function select();
+     *  }
+     *
+     */
+
+    //  实现接口
+    //  需要实现 Compsite FormItem
+    function CompsiteImpl(){
+        //  显示在类的内部,接收所实现的接口
+        //  在类的内部定义一个变量(名字一定要固定),规范
+        this.implementsInterface = ["Compsite","FormItem"];
+    }
+
+    CompsiteImpl.prototype = {
+        "constructor":CompsiteImpl,
+        add:function(){
+            console.log("add 方法");
+        },
+        remove:function(){},
+        update:function(){},
+        select:function(){}
+    };
+
+    /**
+     *
+     * @param instance
+     *
+     * 检测类的方法
+     */
+    function checkCompsiteImpl(instance){
+        //  判断当前对象是否实现了所有的接口
+        if(!isImplements(instance,"Compsite","FormItem")){
+            throw new Error("object does not implement a required interface");
+        }
+    }
+
+    /**
+     *
+     * @param object
+     *
+     * 公共的、具体的检测方法(核心方法)
+     */
+    function isImplements(object){
+        for(var i = 1;i < arguments.length;i ++){
+            var interfaceName = arguments[i],
+                interfaceFound = false;
+            for(var j = 0;j < object.implementsInterface.length;j ++){
+                if(object.implementsInterface[j] == interfaceName){
+                    interfaceFound = true;
+                }
+            }
+            if(!interfaceFound){
+                return false;
+            }
+            return true;
+        }
+    }
+
+    var c1 = new CompsiteImpl();
+    checkCompsiteImpl(c1);
+    c1.add();
+
+</script>
+</body>
+</html>

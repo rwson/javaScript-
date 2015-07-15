@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+    <input id="inp" type="button" value="点我啊">
+    <script type="text/javascript">
+        //  模拟jQuery底层链式编程
+
+        //  块级作用域:
+        //  1、自执行里面的代码
+        //  2、内部的成员变量外部无法访问，除了不加var修饰的变量
+
+        (function(window,undefined){
+
+            function _$(arguments){
+                //  模拟jQuery底层的代码
+                this.dom;
+                //  接收所得到的属性
+                var idSelector = /#\w+/;
+                if(idSelector.test(arguments[0])){
+                    this.dom = document.getElementById(arguments[0].substring(1));
+                }
+            }
+
+            //  在Function原型上拓展实现链式编程的方法,实现链式调用
+            Function.prototype.method = function(name,callback){
+                this.prototype[name] = callback;
+                return this;
+            };
+
+            //  在_$上挂载原型方法
+            _$.prototype = {
+                "constructor":_$,
+                "addEvent":function(ev,fn){
+                    var self = this.dom;
+                    if(addEventListener){
+                        self.addEventListener(ev,function(ev){
+                            var oEv = ev || event;
+                            fn.call(true,oEv);
+                        },false);
+                    }else if(attachEvent){
+                        self.attachEvent("on" + ev,function(ev){
+                            var oEv = ev || event;
+                            fn.call(true,oEv);
+                        });
+                    }
+                    return this;
+                },
+                "setStyle":function(key,val){
+                    var self = this.dom;
+                    self.style[key] = val;
+                    return this;
+                }
+            };
+
+            //  window上挂载全局变量
+            window.$ = _$;
+
+            //  写一个onload方法,模拟$(function(){})
+            _$.onReady = function(callback){
+                //  实例化_$对象,真正的挂载到window上
+                window.$ = function(){
+                    return new _$(arguments);
+                };
+                callback && typeof callback === "function" && callback.call(true);
+            }
+
+        })(window,undefined);
+        //  程序的入口
+
+        $.onReady(function(t){
+            console.log("卧槽");
+            var inp = $("#inp");
+            console.log(inp["dom"]);
+            inp.addEvent("click",function(ev){
+                console.log(ev);
+                console.log("我擦！点我干嘛！");
+            }).setStyle("color","red");
+        });
+
+    </script>
+</body>
+</html>

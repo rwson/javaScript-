@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta http-eqiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <!--如果IE用户安装了Chrome Frame插件，则使用这个插件渲染页面，否则用IE最新的、最好的引擎来渲染页面-->
+    <title></title>
+    <link type="text/css" href="url" rel="stylesheet">
+</head>
+<body>
+<script type="text/javascript">
+    //  javaScript中定义接口
+    //  定义描述    属性检测    鸭式辨型
+
+    //  注解描述
+    //  优点：程序员可以有一个参考
+    //  缺点：还是属于文档的范畴，就是个注视  太松散,没有检测接口的方法被完全实现,只能靠自己用肉眼看
+
+    /**
+     *  interface CompsiteImpl{
+     *      function add();
+     *      function remove();
+     *      function update();
+     *  }
+     */
+
+    /**
+     * 实现接口
+     * @constructor
+     */
+    function CompsiteImpl(){
+    }
+
+    CompsiteImpl.prototype = {
+        "constructor":CompsiteImpl,
+        add:function(){
+            console.log("我是add方法！");
+        },
+        remove:function(){
+            console.log("我是remove方法！");
+        },
+        update:function(){
+            console.log("我是update方法！");
+        }
+    };
+
+</script>
+</body>
+</html>

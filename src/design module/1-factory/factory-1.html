@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script type="text/javascript" src="../../../common/commonUtil.js"></script>
+    <script type="text/javascript">
+
+        //  搭建一个工厂环境
+
+        function CarShop() {
+        }
+
+        commonUtil.wrap(CarShop.prototype, {
+            "constructor": CarShop,
+            "sellCar": function (type) {
+                var car;
+                switch (type) {
+                    case "Benz":
+                        car = new Benz();
+                        break;
+                    case "Bmw":
+                        car = new Bmw();
+                        break;
+                    case "Audi":
+                        car = new Audi();
+                        break;
+                    default:
+                        "not to buy!"
+                }
+                commonUtil.Interface.ensureImplement(car,CarInterface);
+                //  检验接口是否实现
+                return car;
+            }
+        });
+        //  拓展原型对象
+
+        var CarInterface = new commonUtil.Interface("CarInterface", ["start", "run"]);
+        //  接口对象的实例
+
+        /**
+         * SuperClass
+         * @constructor
+         */
+        function BaseCar(){}
+
+        commonUtil.wrap(BaseCar.prototype,{
+            "start": function () {
+                console.log("老子的"+ this.constructor.name +"启动了！");
+            },
+            "run": function () {
+                console.log("老子的"+ this.constructor.name +"开走了！");
+            }
+        });
+
+        //  Class benz bmw audi
+        //  子类应该先继承父类,再拓展或重写自己的方法
+
+        function Benz() {
+        }
+        commonUtil.extend(Benz,BaseCar);
+
+        function Bmw() {
+        }
+        commonUtil.extend(Bmw,BaseCar);
+        commonUtil.wrap(Bmw.prototype,{
+            "driveBmw":function(){
+                console.log("我擦！");
+            },
+            "run":function(){
+                console.log("卧槽！");
+            }
+        });
+
+        function Audi() {
+        }
+        commonUtil.extend(Audi,BaseCar);
+        //  三个子类分别继承父类
+
+        var shop = new CarShop();
+        var car = shop.sellCar("Bmw");
+        car.start();
+        car.run();
+        car.driveBmw();
+        Bmw.superClass.run.call(car);
+
+        var car2 = shop.sellCar("Audi");
+        car2.start();
+        car2.run();
+
+    </script>
+</head>
+<body>
+
+</body>
+</html>

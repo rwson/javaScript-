@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script type="text/javascript" src="../../../common/commonUtil.js"></script>
+    <script type="text/javascript">
+
+        //  搭建一个工厂环境
+        /**
+         * 工厂模式:
+         * 复杂工厂
+         *
+         * 细粒度
+         * 粗粒度
+         *
+         * 万事万物都是Object
+         * 买什么车,去什么4S店 -> 卖车 -> 生产车 -> Factory
+         * 4S店:奥迪4S店、奔驰4S店、宝马4S店
+         * */
+
+        /**
+         * 卖车的商店(抽象类)
+         * 抽象类 -> 用来被之类继承
+         * the CarShop is abstruct class
+         * @constructor
+         * */
+        function CarShop() {
+        }
+
+        commonUtil.wrap(CarShop.prototype, {
+            "constructor": CarShop,
+            "sellCar": function (type) {
+                throw new Error("method sellCar is an abstruct method!");
+            }
+        });
+        //  拓展原型对象
+
+        //  奔驰4S店
+        function BenzCarShop(){}
+        commonUtil.extend(BenzCarShop,CarShop);
+        commonUtil.wrap(BenzCarShop.prototype,{
+            "constructor":BenzCarShop,
+            "sellCar":function(type){
+                var car;
+                var types = ["Benz"];
+                for(var t in types){
+                    if(types[t] === type){
+                        //  如果商店里有想要的型号,就走这边
+                        car = CarFactory.createCar(type);
+                    }else{
+                        //  没有此类型的车
+                        console.log("没有此型号！");
+                    }
+                }
+                return car;
+                //  数组中存放所有奔驰类型的汽车
+            }
+        });
+
+        function BmwCarShop(){}
+        commonUtil.extend(BmwCarShop,CarShop);
+        commonUtil.wrap(BmwCarShop.prototype,{
+            "constructor":BmwCarShop,
+            "sellCar":function(type){
+                var car;
+                var types = ["Bmw"];
+                for(var t in types){
+                    if(types[t] === type){
+                        //  如果商店里有想要的型号,就走这边
+                        car = CarFactory.createCar(type);
+                    }else{
+                        //  没有此类型的车
+                        console.log("没有此型号！");
+                    }
+                }
+                return car;
+            }
+        });
+
+        var CarFactory = {
+            "createCar":function(type){
+                var car;
+                //  动态创建车
+                car = eval("new "+ type +"();");
+                //  利用eval动态创建传入的车实例
+                commonUtil.Interface.ensureImplement(car,CarInterface);
+                //  检验接口是否实现
+                return car;
+            }
+        };
+        //  生产一台车的工厂(单体模式)
+
+        var CarInterface = new commonUtil.Interface("CarInterface", ["start", "run"]);
+        //  接口对象的实例
+
+        /**
+         * SuperClass
+         * @constructor
+         */
+        function BaseCar(){}
+
+        commonUtil.wrap(BaseCar.prototype,{
+            "start": function () {
+                console.log("老子的"+ this.constructor.name +"启动了！");
+            },
+            "run": function () {
+                console.log("老子的"+ this.constructor.name +"开走了！");
+            }
+        });
+
+        //  Class benz bmw audi
+        //  子类应该先继承父类,再拓展或重写自己的方法
+
+        function Benz() {
+        }
+        commonUtil.extend(Benz,BaseCar);
+
+        function Bmw() {
+        }
+        commonUtil.extend(Bmw,BaseCar);
+        commonUtil.wrap(Bmw.prototype,{
+            "driveBmw":function(){
+                console.log("我擦！");
+            },
+            "run":function(){
+                console.log("卧槽！");
+            }
+        });
+
+        function Audi() {
+        }
+        commonUtil.extend(Audi,BaseCar);
+        //  三个子类分别继承父类,并且拓展自己的方法
+
+        var benz = new BenzCarShop(),
+            bmw = new BmwCarShop(),
+            benzCar = benz.sellCar("Benz2"),
+            bmwCar = bmw.sellCar("Bmw");
+
+        benzCar.run();
+        bmwCar.run();
+
+    </script>
+</head>
+<body>
+
+</body>
+</html>

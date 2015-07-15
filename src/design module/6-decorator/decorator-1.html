@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="../../../common/commonUtil.js"></script>
+    <script>
+        /**
+         * 装饰者模式
+         * 透明的把原始对象包装在另一个对象中
+         */
+
+        //  实现同样接口
+        //  需要新的子类
+
+        var CarInterface = new commonUtil.Interface("CarInterface",["getPrice","assenble"]);
+
+        function Car(car){
+            this.car = car;
+            //  为了让子类继承(让子类多一个父类的引用)
+            commonUtil.Interface.ensureImplement(this,CarInterface);
+            //  检测接口
+        }
+        commonUtil.wrap(Car.prototype,{
+            "constructor":Car,
+            "getPrice":function(){
+                return 200000;
+            },
+            "assenble":function(){
+                console.log("组装汽车");
+            }
+        });
+
+        //  新需求:light,icebox
+
+        function lightDecorator(car){
+            //  参数car代表原始对象
+            lightDecorator.superClass.constructor.call(this,car);
+            //  构造方法继承
+            //  this.car = car;
+            //  为了让子类继承(让子类多一个父类的引用)
+            //  commonUtil.ensureImplement(this,CarInterface);
+            //  检测接口
+        }
+        commonUtil.extend(lightDecorator,Car);
+        //  继承
+
+        commonUtil.wrap(lightDecorator.prototype,{
+            "constructor":lightDecorator,
+            "getPrice":function(){
+                return this.car.getPrice() + 10000;
+            },
+            "assenble":function(){
+                console.log("组装车灯");
+            }
+        });
+        //  重写父类的方法会影响继承过来的方法
+
+        function iceBoxDecorator(car){
+            //  参数car代表原始对象
+            iceBoxDecorator.superClass.constructor.call(this,car);
+            //  构造方法继承
+            //  this.car = car;
+            //  为了让子类继承(让子类多一个父类的引用)
+            //  commonUtil.ensureImplement(this,CarInterface);
+            //  检测接口
+        }
+        commonUtil.extend(iceBoxDecorator,Car);
+        //  继承
+
+        commonUtil.wrap(iceBoxDecorator.prototype,{
+            "constructor":iceBoxDecorator,
+            "getPrice":function(){
+                return this.car.getPrice() + 20000;
+            },
+            "assenble":function(){
+                console.log("组装冰箱");
+            }
+        });
+
+        var car = new Car();
+        console.log(car.getPrice());
+        car.assenble();
+
+        car = new lightDecorator(car);
+        console.log(car.getPrice());
+
+        car = new iceBoxDecorator(car);
+        console.log(car.getPrice());
+
+    </script>
+</head>
+<body>
+</body>
+</html>

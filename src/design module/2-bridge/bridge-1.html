@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="../../../common/commonUtil.js"></script>
+    <script src="js/jquery-1.7.2.min.js"></script>
+    <script>
+        /**
+         * 桥接模式:把现实和抽象分离,使他们可以完全独立变化
+         *
+         * 事件监听回调机制
+         * 用户点击一个按钮,向服务器端发送信息
+         **/
+
+        /*
+            传统模式
+        $(function(){
+
+            //  前台业务逻辑
+            var btn = document.getElementById("btn");
+            //  事件注册,给元素绑定事件
+            commonUtil.EventUtil.addHandle(btn,"click",sendRequest);
+
+            //----------------------------------------
+
+            //  后台业务逻辑
+            function sendRequest(){
+                console.log(btn.value)
+            }
+
+        });
+        */
+
+        //  利用桥模式,分离业务逻辑
+        $(function(){
+
+            //  前台业务逻辑
+            var btn = document.getElementById("btn");
+            //  事件注册,给元素绑定事件
+            commonUtil.EventUtil.addHandle(btn,"click",bridgeHandle);
+
+            function bridgeHandle(){
+                var msg = btn.value;
+                sendRequest(msg);
+            }
+
+            //  后台业务逻辑
+            function sendRequest(msg){
+                console.log(msg);
+            }
+
+        });
+
+    </script>
+</head>
+<body>
+    <input type="button" id="btn" value="我是数据">
+</body>
+</html>

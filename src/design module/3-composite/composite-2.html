@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="../../../common/commonUtil.js"></script>
+    <script>
+        /**
+         *  组合模式应用的场景和特点
+         *   场景
+         *      1、存在某种组织结构
+         *      2、希望对一个对象或者一批对象实施一个操作
+         *
+         *   特点
+         *      1、组合模式中只有组合对象和叶子对象两种对象
+         *      2、两种对象类型都应该实现同一批接口
+         *      3、一般在组合对象中调用其方法并且隐式调用下级对象的方法
+         **/
+
+        /**
+         * 场景模拟：
+         *  -> 南京传唱
+         *  	 -> 北京分公司
+         *					-> 开发部门
+         *								-> 张1
+         *								-> 张2
+         *								-> 张3
+         *					-> 销售部门
+         *								-> 张4
+         *								-> 张5
+         *								-> 张6
+         *       -> 杭州分公司
+         *					-> 开发部门
+         *								-> 张7
+         *								-> 张8
+         *								-> 张9
+         *					-> 销售部门
+         *								-> 张10
+         *								-> 张11
+         *								-> 张12
+         *
+         **/
+
+        var CompositeInterface = new commonUtil.Interface("CompositeInterface",["addChild","getChild"]),
+            LeafInterface = new commonUtil.Interface("LeafInterface",["hardWorking","sleeping"]);
+        /**
+         * 组合对象
+         * @param name
+         * @constructor
+         */
+        function Composite(name){
+            this.name = name;
+            this.type = "Composite";
+            //  说明当前对象类型
+            this.children = [];
+            //  承装孩子的数组
+        }
+        commonUtil.wrap(Composite.prototype,{
+            "constructor":Composite,
+            "addChild":function(child){
+                this.children.push(child);
+                return this;
+            },
+            "getChild":function(name){
+                var list = [],
+                    pushLeaf = function(item){
+                        if(this.name === name || item["type"] === "Composite"){
+                              item["children"].each(arguments.callee);
+                             // pushLeaf(item["children"]);
+                        }else if(item["type"] === "Leaf") {
+                            list.push(item);
+                        }
+                    };
+                if(name && this.name !== name){
+                    //  返回指定类型的叶子对象
+                    this.children.each(function(item){
+                        if(item["name"] === name && item["type"] === "Composite"){
+                            item["children"].each(pushLeaf);
+                        }
+                        //  二级节点
+                        if(item["name"] !== name && item["type"] === "Composite"){
+                            item["children"].each(arguments.callee);
+                        }
+                        //  三级、四级...
+                        if(item["name"] === name && item["type"] === "Leaf"){
+                            list.push(item);
+                        }
+                    });
+                }else{
+                    //  返回所有叶子对象
+                    this.children.each(pushLeaf);
+                }
+                return list;
+            },
+            "hardWorking":function(name){
+                var leafObjects = this.getChild(name);
+                //  得到所有的叶子类型对象
+                for(var i = 0,l = leafObjects.length;i < l;i ++){
+                    leafObjects[i] && leafObjects[i].hardWorking(leafObjects[i]["name"]);
+                }
+            },
+            "sleeping":function(name){
+                var leafObjects = this.getChild(name);
+                //  得到所有的叶子类型对象
+                for(var i = 0,l = leafObjects.length;i < l;i ++){
+                    leafObjects[i].sleeping(leafObjects[i]["name"]);
+                }
+            }
+        });
+
+        /**
+         * 叶子对象
+         * @param name
+         * @constructor
+         */
+        function Leaf(name){
+            this.name = name;
+            this.type = "Leaf";
+            //  说明当前对象类型
+        }
+        commonUtil.wrap(Leaf.prototype,{
+            "constructor":Leaf,
+            "addChild":function(child){
+                throw new Error("this method is disabled");
+            },
+            "getChild":function(name){
+                if(this.name === name){
+                    return this;
+                }
+                return null;
+            },
+            "hardWorking":function(){
+                console.log(this.name + " ... 努力工作！");
+            },
+            "sleeping":function(name){
+                console.log(this.name + " ... 睡觉！");
+            }
+        });
+
+
+        var p1 = new Leaf("张1"),
+            p2 = new Leaf("张2"),
+            p3 = new Leaf("张3"),
+            p4 = new Leaf("张4"),
+            p5 = new Leaf("张5"),
+            p6 = new Leaf("张6"),
+            p7 = new Leaf("张7"),
+            p8 = new Leaf("张8"),
+            p9 = new Leaf("张9"),
+            p10 = new Leaf("张10"),
+            p11 = new Leaf("张11"),
+            p12 = new Leaf("张12"),
+            dept1 = new Composite("南京开发部"),
+            dept2 = new Composite("南京销售部"),
+            dept3 = new Composite("杭州开发部"),
+            dept4 = new Composite("杭州销售部"),
+            org = new Composite("南京传唱"),
+            org2 = new Composite("北京分公司"),
+            org3 = new Composite("杭州分公司");
+
+        dept1.addChild(p1).addChild(p2).addChild(p3);
+        dept2.addChild(p4).addChild(p5).addChild(p6);
+        dept3.addChild(p7).addChild(p8).addChild(p9);
+        dept4.addChild(p10).addChild(p11).addChild(p12);
+
+        org2.addChild(dept1).addChild(dept2);
+        org3.addChild(dept3).addChild(dept4);
+        org.addChild(org2).addChild(org3);
+
+        org.hardWorking();  //  总公司
+        org.hardWorking("南京分公司");  //  总公司直接子节点
+        org.hardWorking("杭州开发部");  //  某级子节点
+        org.hardWorking("张12");  //  具体某人
+
+    </script>
+</head>
+<body>
+</body>
+</html>

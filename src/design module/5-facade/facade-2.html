@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="../../../common/commonUtil.js"></script>
+    <script>
+        /**
+         * 门面模式(最简单的设计模式)
+         *      1、简化类的接口    最经典的就是事件
+         *      2、消除类与调用它的客户代码之间的耦合
+         *
+         */
+
+        window.onload = function(){
+            setStyle(["div1","div2","div3"],{
+                "width":"300px",
+                "height":"300px",
+                "backgroundColor":"red",
+                "font-size":"70px"
+            });
+
+        };
+
+        /**
+         * 简单的门面模式
+         * @param ele
+         * @param css
+         */
+        function setStyle(ele,css){
+            for(var i = 0;i < ele.length;i ++){
+                for(var j in css){
+                    (j in css) && (document.getElementById(ele[i]).style[j] = css[j]);
+                }
+            }
+        }
+        
+    </script>
+</head>
+<body>
+    <div id="div1">老子是div1</div>
+    <div id="div2">老子是div2</div>
+    <div id="div3">老子是div3</div>
+</body>
+</html>

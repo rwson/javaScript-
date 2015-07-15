@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="../../../common/commonUtil.js"></script>
+    <script>
+        /**
+         * 装饰者模式
+         * 透明的把原始对象包装在另一个对象中
+         * 装饰者模式不仅可以用在类上,还可以用在函数上
+         */
+
+
+        function getDate(){
+            var date = new Date();
+            return date.toString();
+        }
+        //  返回当前时间的字符串表示
+
+        function toUpperCaseDecorator(fn){
+            return (function(f){
+                return f.apply(this,arguments).toUpperCase();
+            })(fn);
+        }
+
+        console.log(getDate());
+        console.log(toUpperCaseDecorator(getDate));
+
+    </script>
+</head>
+<body>
+</body>
+</html>

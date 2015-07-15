@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="../../../common/commonUtil.js"></script>
+    <script>
+        /**
+         * 适配器模式
+         *
+         *      JS类库
+         *      其中有一部分人会YUI,有一部分人会prototype......
+         *
+         *      最后采用YUI(用YAHOO的框架,但是以前用prototype的程序员该怎么写还怎么写)
+         */
+
+        //  模拟根据id获取指定的dom元素
+        //  模拟prototype   $ function(不需要传递任何的形参)
+        function $(){
+            var ele = [];
+            for(var i = 0;i < arguments.length;i ++){
+                var el = arguments[i];
+                if(typeof el === "string"){
+                    el = document.getElementById(el);
+                }
+                if(el.length == 1){
+                    return el;
+                }
+                ele.push(el);
+            }
+            return ele;
+        }
+
+        //  模拟YUI         get function(必须传递一个参数,不是字符串就是数组)
+        var YAHOO = {};
+        YAHOO.get = function(el){
+            if(typeof el === "string"){
+                return document.getElementById(el);
+            }else if(el instanceof Array){
+                var ele = [];
+                for(var i = 0;i < el.length;i ++){
+//                      ele.push(document.getElementById(el[i]));
+                      ele[ele.length] = YAHOO.get(el[i]);
+                }
+                return ele;
+            }else if(el){
+                return el;
+            }else{
+                return null;
+            }
+        };
+
+        //  适配器方法
+        function YUIToPrototypeAdapter(){
+            //  YUI开发永远传递一个参数
+            if(arguments.length == 1){
+                //  YUI
+                var e = arguments[0];
+                return $.apply(window,e instanceof  Array ? e : [e]);
+            }else{
+                //  prototype
+                return $.apply(window,arguments);
+            }
+        }
+
+        YAHOO.get = YUIToPrototypeAdapter;
+
+        window.onload = function(){
+            //  $("div1","div2")            prototype风格
+            //  YAHOO.get(["div1","div2"])  YUI风格
+            console.log($("div1","div2"));
+            console.log(YAHOO.get(["div1","div2"]));
+        };
+
+    </script>
+</head>
+<body>
+    <div id="div1"></div>
+    <div id="div2"></div>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="../../../common/commonUtil.js"></script>
+    <script>
+        /**
+         *
+         * ->公司
+         *
+         *      ->财务
+         *            ->张一
+         *            ->张二
+         *            ->张三
+         *
+         *     ->销售
+         *           ->张四
+         *           ->张五
+         *           ->张六
+         *
+         *  实际的任务具体落实到人去实现
+         **/
+
+        function Org(name){
+            this.name = name;
+            this.depts = [];
+        }
+        commonUtil.wrap(Org.prototype,{
+            "constructor":Org,
+            "addDepts":function(child){
+                this.depts.push(child);
+                return this;
+            },
+            "getDepts":function(){
+                return this.depts;
+            }
+        });
+
+        function Dept(name){
+            this.name = name;
+            this.persons = [];
+        }
+        commonUtil.wrap(Dept.prototype,{
+            "constructor":Dept,
+            "addPersons":function(child){
+                this.persons.push(child);
+                return this;
+            },
+            "getPersons":function(){
+                return this.persons;
+            }
+        });
+
+        function Person(name){
+            this.name = name;
+        }
+        commonUtil.wrap(Person.prototype,{
+            "constructor":Person,
+            "hardWorking":function(){
+                console.log(this.name + " ... 努力工作！");
+            },
+            "sleeping":function(){
+                console.log(this.name + "睡觉！");
+            }
+        });
+
+        var p1 = new Person("张1"),
+            p2 = new Person("张2"),
+            p3 = new Person("张3"),
+            p4 = new Person("张4"),
+            p5 = new Person("张5"),
+            p6 = new Person("张6"),
+            dept1 = new Dept("开发"),
+            dept2 = new Dept("销售"),
+            org = new Org("南京传唱");
+
+        dept1.addPersons(p1).addPersons(p2).addPersons(p3);
+        dept2.addPersons(p4).addPersons(p5).addPersons(p6);
+        org.addDepts(dept1).addDepts(dept2);
+        //  具体的让张3努力工作
+
+        for(var i = 0,depts = org.getDepts();i < depts.length;i ++){
+            for(j = 0,persons = depts[i].getPersons();j < persons.length;j ++){
+                if(persons[j]["name"] === "张3"){
+                    persons[j].hardWorking();
+                }
+            }
+        }
+
+    </script>
+</head>
+<body>
+</body>
+</html>

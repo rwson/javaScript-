@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script type="text/javascript">
+        /**
+         *  单体模式(singleton)
+         *  2、闭包单体(保护数据,不受外部干扰)
+         */
+
+        var MrSon = {};
+        MrSon.Sigeleton = (function(){
+
+            /**
+             * 私有方法,拒绝外部访问
+             * @private
+             */
+            function _method1(){
+                console.log("卧槽！小宋好帅！");
+            }
+
+            /**
+             * 私有方法,拒绝外部访问
+             * @private
+             */
+            function _method2(){
+                console.log("卧槽 x 2！小宋好帅！");
+            }
+
+            /**
+             * 私有成员变量,拒绝外部访问
+             * @type {number}
+             */
+            var arg1 = 1,
+                arg2 = 2;
+
+            return {
+                "attr1":arg1,
+                "attr2":arg2,
+                "method1":function(){
+                    return _method1();
+                },
+                "method2":function(){
+                    return _method2();
+                }
+            };
+            //  返回值给外部接收
+        })();
+        //  闭包单体
+        MrSon.Sigeleton.method2();
+
+    </script>
+</head>
+<body>
+
+</body>
+</html>

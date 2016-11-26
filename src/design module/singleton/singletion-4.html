@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script type="text/javascript">
+        /**
+         *  单体模式(singleton)
+         *  4、分支单体(判断程序的分支,switch case,浏览器差异检测)
+         */
+
+        var EXT = {};
+        //  顶层命名空间
+
+        var def = true;
+        EXT.Browser = (function(ua){
+            var firefox = {
+                    "name":"firefox",
+                    "version":"4.0"
+                },
+                IE = {
+                    "name":"IE",
+                    "version":"6.0"
+                };
+
+            return (def) ? firefox : IE;
+
+        })(navigator.userAgent.toLowerCase());
+
+    </script>
+</head>
+<body>
+
+</body>
+</html>

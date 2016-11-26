@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script type="text/javascript" src="../../../common/commonUtil.js"></script>
+    <script type="text/javascript">
+
+        /**
+         * 观察者模式
+         * 实质上就是可以对程序中某个对象或属性进行监控,并且在状态发生改变时得到通知
+         *
+         * 观察者 <-> 被观察者
+         * 经典案例:
+         * 订阅报纸 报社 <-> 订阅者
+         */
+
+        /**
+         * 发布者(被观察者)
+         * @param name
+         * @constructor
+         */
+        function Publish(name){
+            this.name = name;
+            this.subscribers = [];
+            //  接收所有的订阅者(数组里面每个元素都是函数类型)
+        }
+        commonUtil.wrap(Publish.prototype,{
+            "constructor":Publish,
+            /**
+             * Publish实例对象发布消息
+             * @param news
+             */
+            "deliver":function(news){
+                var self = this;
+                this.subscribers.forEach(function(fn){
+                    fn(news,self);
+                    //  把新消息发给订阅者
+                });
+                return this;
+            }
+        });
+
+        /**
+         * 具体的订阅者订阅报纸
+         * @param publisher
+         */
+        Function.prototype.subscribe = function(publisher){
+            var self = this,
+            //  取得具体订阅者
+                    selfExits = publisher.subscribers.some(function(item){
+                        return item === self;
+                    });
+            if(!selfExits){
+                publisher.subscribers.push(self);
+            }
+            //  如果当前没有订阅该出版社报纸,就订阅
+            return this;
+        };
+
+        /**
+         * 取消订阅报纸
+         * @param publisher
+         */
+        Function.prototype.unsubscribe = function(publisher){
+            var self = this;
+            //  过滤
+            publisher.subscribers = publisher.subscribers.filter(function(item){
+                return item !== self;
+            });
+            return this;
+        };
+
+        window.onload = function(){
+
+            //  实例化报社(被观察者)
+            var pub1 = new Publish("第一报社");
+            var pub2 = new Publish("第二报社");
+            var pub3 = new Publish("第三报社");
+
+            //  订阅者
+            function sub1(news){
+                if(news.length >= 1){
+                    document.getElementById("sub1").innerHTML += arguments[1].name + ":" + news + "\n";
+                }
+            }
+
+            function sub2(news){
+                if(news.length >= 1){
+                    document.getElementById("sub2").innerHTML += arguments[1].name + ":" + news + "\n";
+                }
+            }
+
+            //  订阅报社的报纸
+            sub1.subscribe(pub1).subscribe(pub2).subscribe(pub3);
+            sub2.subscribe(pub1).subscribe(pub2);
+
+            //  事件绑定
+            commonUtil.EventUtil.addHandle(document.getElementById("publish-1"),"click",function(ev){
+                pub1.deliver(document.getElementById("news-1").value);
+            });
+
+            commonUtil.EventUtil.addHandle(document.getElementById("publish-2"),"click",function(ev){
+                pub2.deliver(document.getElementById("news-2").value);
+            });
+
+            commonUtil.EventUtil.addHandle(document.getElementById("publish-3"),"click",function(ev){
+                pub3.deliver(document.getElementById("news-3").value);
+            });
+
+            sub1.unsubscribe(pub1);
+        };
+
+    </script>
+</head>
+<body>
+    <input id="publish-1" type="button" value="1报社"><input type="text" id="news-1"><br>
+    <input id="publish-2" type="button" value="2报社"><input type="text" id="news-2"><br>
+    <input id="publish-3" type="button" value="3报社"><input type="text" id="news-3"><br>
+
+    <p>订阅者1</p>
+    <textarea id="sub1" rows="5" cols="30"></textarea>
+    <p>订阅者2</p>
+    <textarea id="sub2" rows="5" cols="30"></textarea>
+</body>
+</html>

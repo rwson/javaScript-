@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="../../../common/commonUtil.js"></script>
+    <script>
+        /**
+         * 享元模式
+         *      以性能优化为准的设计模式
+         *
+         */
+
+        //  出厂商、型号、出厂日期、拥有者，车牌号，登记日期
+        function Car(make,model,year,owner,tag,renewDate){
+            this.make = make;
+            this.model = model;
+            this.year = year;
+            this.owner = owner;
+            this.tag = tag;
+            this.renewDate = renewDate;
+        }
+        commonUtil.wrap(Car.prototype,{
+            "constructor":Car,
+            "getMake":function(){
+                return this.make;
+            },
+            "getModel":function(){
+                return this.model;
+            },
+            "getYear":function(){
+                return this.year;
+            },
+            "getOwner":function(){
+                return this.owner;
+            },
+            "getTag":function(){
+                return this.tag;
+            },
+            "getRenewDate":function(newRenewDate){
+                this.renewDate = newRenewDate;
+            }
+        });
+
+        var arr = [];
+
+        console.time("测试性能");
+        for(var i = 0;i < 5000000;i ++){
+            arr.push(new Car("上海大众","凌渡","2014-04-06","小宋","苏A·888888","2014-05-09"));
+        }
+        console.timeEnd("测试性能");
+        //  运行时间4秒左右
+
+    </script>
+</head>
+<body>
+</body>
+</html>

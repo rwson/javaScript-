@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script type="text/javascript">
+        /**
+         *  单体模式(singleton)
+         *  1、简单单体
+         */
+
+        var Singleton = {
+            "attr1":true,
+            "attr2":10,
+            "method1":function(){
+                console.log("卧槽！小宋好帅！");
+            },
+            "method2":function(){
+                console.log("卧槽 x 2！小宋好帅！");
+            }
+        };
+
+        Singleton.method1();
+        Singleton.method2();
+
+        //  划分命名空间(区分代码,降低耦合性)
+
+        var MrSon = {};
+        var MrSon2 = {};
+        MrSon.Singleton = {
+            "attr1":true,
+            "attr2":10,
+            "method1":function(){
+                console.log("卧槽！小宋好帅！");
+            },
+            "method2":function(){
+                console.log("卧槽 x 2！小宋好帅！");
+            }
+        };
+        //  我自己写的代码
+
+        MrSon2.Singleton = {
+            "attr1":true,
+            "attr2":10,
+            "method1":function(){
+                console.log("卧槽！小宋好丑！");
+            },
+            "method2":function(){
+                console.log("卧槽 x 2！小宋好丑！");
+            }
+        };
+        //  别人写的代码
+
+        MrSon.Singleton.method1();
+
+    </script>
+</head>
+<body>
+
+</body>
+</html>

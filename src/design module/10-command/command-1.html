@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script type="text/javascript" src="../../../common/commonUtil.js"></script>
+    <script type="text/javascript">
+
+        /**
+         * 命令模式
+         * 封装方法执行调用的模式
+         *
+         * 要执行一件事情
+         * 1.命令1 2.命令2 3.命令3
+         *
+         * 把执行调用命令的调用者和接收命令的接收者
+         * 消除调用操作对象和实现操作对象之间的耦合
+         * 命令模式必须实现接口(excute)
+         *
+         * 命令模式分类:
+         *      简单命令模式
+         *      复杂命令模式(事务)
+         *      闭包命令模式(更灵活地调用命令)
+         */
+
+        var CommandInterface = new commonUtil.Interface("CommandInterface",["excute"]);
+        //  定义命令接口
+
+        //  有个按钮,点击一个按钮,触发几个元素执行动画
+        //  2个命令(start <-> stop)
+
+        /**
+         * 开始命令类
+         * @param obj
+         * @constructor
+         */
+        function StartCommand(obj){
+            this.ad = obj;
+        }
+        StartCommand.prototype.excute = function(){
+            this.ad.start();
+        }
+
+        /**
+         * 结束命令类
+         * @param obj
+         * @constructor
+         */
+        function StopCommand(obj){
+            this.ad = obj;
+        }
+        StopCommand.prototype.excute = function(){
+            this.ad.stop();
+        }
+
+        var start = new StartCommand(obj);
+        start.excute();
+
+        var stop = new StopCommand(obj);
+        stop.excute();
+        //  调用者只需要执行相应的命令即可,不需要关心命令怎么执行的
+        //  执行者才真正的去处理这条命令的内部实现
+
+    </script>
+</head>
+<body>
+</body>
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script type="text/javascript" src="../../../common/commonUtil.js"></script>
+    <script type="text/javascript">
+
+        /**
+         * 命令模式
+         *
+         * 用命令模式实现简单的小游戏:
+         * 页面上有4个按钮,每个按钮控制上下左右,还有个回退按钮
+         * 把一个元素让其移动(四个命令),分别执行命令,每执行一次,就有个集合存储该命令
+         */
+
+        var ReversiableCommandInterface = new commonUtil.Interface("ReversiableCommandInterface",["execute","undo"]);
+        //  接口,实现执行命令和回退命令
+
+        function MoveUp(cursor){
+            this.cursor = cursor;
+        }
+        MoveUp.prototype = {
+            "constructor":MoveUp,
+            "execute":function(){
+                this.cursor.move(0,-10);
+            },
+            "undo":function(){
+                this.cursor.move(0,10);
+            }
+        };
+
+        function MoveDown(cursor){
+            this.cursor = cursor;
+        }
+        MoveDown.prototype = {
+            "constructor":MoveDown,
+            "execute":function(){
+                this.cursor.move(0,10);
+            },
+            "undo":function(){
+                this.cursor.move(0,-10);
+            }
+        };
+
+        function MoveLeft(cursor){
+            this.cursor = cursor;
+        }
+        MoveLeft.prototype = {
+            "constructor":MoveLeft,
+            "execute":function(){
+                this.cursor.move(-10,0);
+            },
+            "undo":function(){
+                this.cursor.move(10,0);
+            }
+        };
+
+        function MoveRight(cursor){
+            this.cursor = cursor;
+        }
+        MoveRight.prototype = {
+            "constructor":MoveRight,
+            "execute":function(){
+                this.cursor.move(10,0);
+            },
+            "undo":function(){
+                this.cursor.move(-10,0);
+            }
+        };
+        //  四个命令对象
+
+        function Cursor(width,height,parent){
+            this.width = width;
+            this.height = height;
+            //  代表外层的宽高
+            this.position = {
+                "x":this.width / 2,
+                "y":this.height / 2
+            };
+            //  移动元素的具体位置
+            this.canvas = document.createElement("canvas");
+            this.canvas.width = this.width;
+            this.canvas.height = this.height;
+            this.canvas.id = "canvas";
+            parent.appendChild(this.canvas);
+            this.ctx = this.canvas.getContext("2d");
+            this.ctx.fillStyle = "red";
+            this.move(0,0);
+        }
+        Cursor.prototype.move = function(x,y){
+            this.position.x += x;
+            this.position.y += y;
+            this.ctx.clearRect(0,0,this.width,this.height);
+            this.ctx.fillRect(this.position.x,this.position.y,20,20);
+        };
+        //  接收者(操作具体方法的元素对象) HTML5/ECMA5
+
+        //  应该有一个命令的集合,为了当执行每一个命令之前,把该命令加入到集合中(push,pop)
+        //  命令对象在执行操作之前,把命令加入到集合中,也就是说在元素命令类中加入新特性  -> 装饰者模式
+
+        /**
+         * 装饰类,装饰命令对象类的实例
+         * @param command       原始的命令对象(被装饰者)
+         * @param undoStack     当前的命令集合(数组)
+         * @constructor
+         */
+        function UndoDecrator(command,undoStack){
+            this.command = command;
+            this.undoStack = undoStack;
+        }
+        UndoDecrator.prototype = {
+            "constructor":UndoDecrator,
+            "execute":function(){
+                this.undoStack.push(this.command);
+                this.command.execute();
+            },
+            "undo":function(){
+                this.command.undo();
+            }
+        };
+
+        function CommandButton(label,command,parent){
+            commonUtil.Interface.ensureImplement(command,ReversiableCommandInterface);
+            //  检验接口
+            this.element = document.createElement("button");
+            this.element.innerHTML = label;
+            parent.appendChild(this.element);
+
+            commonUtil.EventUtil.addHandle(this.element,"click",function(){
+                command.execute();
+            });
+        }
+        //  命令按钮
+
+        function UndoButton(label,parent,undoStack){
+            this.element = document.createElement("button");
+            this.element.innerHTML = label;
+            parent.appendChild(this.element);
+
+            commonUtil.EventUtil.addHandle(this.element,"click",function(){
+                if(undoStack.length == 0){
+                    alert("已经没有之前命令了！");
+                    return;
+                }else{
+                    var lastCommand = undoStack.pop();
+                    lastCommand.undo();
+                    //  回退
+                }
+            });
+        }
+
+        window.onload = function(){
+
+            console.log(document.getElementsByTagName("body")[0]);
+
+            var undoStack = [],
+                body = document.getElementsByTagName("body")[0],
+                cursor = new Cursor(400,400,body),      //  接收者对象
+                upCommand = new UndoDecrator(new MoveUp(cursor),undoStack),
+                downCommand = new UndoDecrator(new MoveDown(cursor),undoStack),
+                leftCommand = new UndoDecrator(new MoveLeft(cursor),undoStack),
+                rightCommand = new UndoDecrator(new MoveRight(cursor),undoStack),
+
+                upBtn = new CommandButton("向上",upCommand,body),
+                downBtn = new CommandButton("向下",downCommand,body),
+                leftBtn = new CommandButton("向左",leftCommand,body),
+                rightBtn = new CommandButton("向右",rightCommand,body),
+                uoBtn = new UndoButton("撤销",body,undoStack);
+        };
+
+    </script>
+    <style>
+        canvas{
+            display: block;
+        }
+    </style>
+</head>
+<body>
+</body>
+</html>

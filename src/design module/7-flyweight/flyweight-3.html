@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="../../../common/commonUtil.js"></script>
+    <script>
+
+        //  web日历
+
+        //  年、月、日
+        var CalendarInterface = new commonUtil.Interface("CalendarInterface",["display"]);
+
+        function CalendarYear(year,parent){
+            this.year = year;
+            this.element = document.createElement("div");
+            this.element.style.display = "none";
+            parent.appendChild(this.element);
+
+            function _isLeapYear(y){
+                return y > 0 && (y % 4) && ((y % 100) || (y % 400));
+            }
+            //  闰年判断
+
+            this.month = [];
+            //  年对象的月份
+
+            this.numDays = [31,_isLeapYear(this.year) ? 29 : 28,31,30,31,31,30,31,30,31];
+            //  每月天数
+
+            for(var i = 0;i < 12;i ++){
+                this.month[i] = new CalendarMonth(i + 1,this.numDays,this.element);
+            }
+
+        }
+        commonUtil.wrap(CalendarYear.prototype,{
+            "constructor":CalendarYear,
+            "display":function(){
+                for(var i = 0;i < this.month.length;i ++){
+                    this.month[i].display();
+                }
+                this.element.style.display = "block";
+            }
+        });
+
+        function CalendarMonth(monthNum,monthDays,parent){
+            this.monthNum = monthNum;
+            this.element = document.createElement("div");
+            this.element.style.display = "none";
+            parent.appendChild(this.element);
+
+            this.days = [];
+            //  天的数组
+
+            for(var i = 0;i < monthDays;i ++){
+                this.days[i] = new CalendarDate(i + 1,this.element);
+                console.log(this.days);
+            }
+
+        }
+        commonUtil.wrap(CalendarMonth.prototype,{
+            "constructor":CalendarMonth,
+            "display":function(){
+                console.log(this.days);
+                for(var i = 0;i < this.days.length;i ++){
+                    this.days[i].display();
+                }
+                this.element.style.display = "block";
+            }
+        });
+
+        function CalendarDate(date,parent){
+            this.days = date;
+            this.element = document.createElement("div");
+            this.element.style.display = "none";
+            parent.appendChild(this.element);
+        }
+        commonUtil.wrap(CalendarDate.prototype,{
+            "constructor":CalendarDate,
+            "display":function(){
+                console.log(111)
+                this.element.style.display = "block";
+                this.element.innerHTML = this.days;
+                console.log(this.element);
+            }
+        });
+
+        window.onload = function(){
+            var calendar = document.getElementById("calendar"),
+                year = new CalendarYear(2015,calendar);
+            year.display();
+        };
+
+    </script>
+</head>
+<body>
+    <div id="calendar"></div>
+</body>
+</html>

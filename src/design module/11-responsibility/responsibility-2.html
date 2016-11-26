@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script type="text/javascript" src="../../../common/commonUtil.js"></script>
+    <script type="text/javascript">
+
+        /**
+         * 责任链模式
+         * 处理发出者和接收者之间的耦合性
+         *
+         * 角色:发出者/接收者
+         */
+
+        //  做项目 -> 项目经理：-任务-> 项目组(A/B/C/D)
+
+        function Assign(task){
+            this.task = task;
+        }
+        //  任务类
+
+        function WorkFlow(assign){
+            this.assign = assign;
+        }
+        WorkFlow.prototype = {
+            "constructor":WorkFlow,
+            "filterHandle":function(executer){
+                //  只接收链中的第一个接收者
+                if(this.assign.task === executer.cando){
+                    return executer.todo();
+                }else{
+                    arguments.callee.call(this,executer.successor);
+                }
+            }
+        };
+        //  接收任务
+
+        function Executer(name,cando){
+            this.name = name;
+            this.cando = cando;
+            this.successor = null;  //  保留自己下一个对象的引用
+        }
+        Executer.prototype = {
+            "constructor":Executer,
+            "todo":function(){
+                console.log(this.name + "开发：" + this.cando);
+            },
+            "setSuccessor":function(executer){
+                this.successor = executer;
+            }
+        };
+        //  处理者
+
+        var e1 = new Executer("A","javaScript"),
+            e2 = new Executer("B","nodeJs"),
+            e3 = new Executer("B","css"),
+            e4 = new Executer("B","sql");
+        //  实例化四个处理对象
+
+        e1.setSuccessor(e2);
+        e2.setSuccessor(e3);
+        e3.setSuccessor(e4);
+        //  对象之间的责任链关系
+
+        var assign = new Assign("nodeJs"),
+            workFlow = new WorkFlow(assign);
+
+        workFlow.filterHandle(e1);
+
+    </script>
+</head>
+<body>
+</body>
+</html>

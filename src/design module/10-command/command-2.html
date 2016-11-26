@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script type="text/javascript" src="../../../common/commonUtil.js"></script>
+    <script type="text/javascript">
+
+        /**
+         * 闭包命令模式
+         */
+
+        function MakeStart(obj){
+            return function(){
+                obj.start();
+            };
+        }
+
+        function MakeStop(obj){
+            return function(){
+                obj.stop();
+            };
+        }
+
+        var start = new MakeStart(obj);
+        start();
+
+        var stop = new MakeStop(obj);
+        stop();
+
+        //  客户、调用者、接收者
+        //  客户创建命令,调用该命令,接收者执行该命令
+
+    </script>
+</head>
+<body>
+</body>
+</html>

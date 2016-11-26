@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="../../../common/commonUtil.js"></script>
+    <script>
+        /**
+         * 享元模式
+         *      以性能优化为准的设计模式
+         *
+         */
+
+        //  出厂商、型号、出厂日期、拥有者，车牌号，登记日期
+        //  把内在属性提取出来(出厂商、型号、出厂日期)
+        function Car(make,model,year){
+            this.make = make;
+            this.model = model;
+            this.year = year;
+        }
+        commonUtil.wrap(Car.prototype,{
+            "constructor":Car,
+            "getMake":function(){
+                return this.make;
+            },
+            "getModel":function(){
+                return this.model;
+            },
+            "getYear":function(){
+                return this.year;
+            }
+        });
+
+        //  闭包工厂初始化静态属性
+        var CarFactory = (function(){
+            //  已经实例化好的car
+            var createdCars = {};
+            return {
+                "createCar":function(make,model,year){
+                    if(createdCars[make + model + year]){
+                        //  如果createdCar对象中已经存在当前的make + model + year,直接return
+                        return createdCars[make + model + year];
+                    }else{
+                        var car = new Car(make,model,year);
+                        createdCars[make + model + year] = car;
+                        return car;
+                    }
+                }
+            };
+        })();
+
+        //  单体模式把外在数据和内在数据结合在一起
+        var CarRecordManage = (function(){
+            //  存放登记好的car对象保存
+            var carRecordDataBase = {};
+            return {
+                "addCarRecord":function(make,model,year,owner,tag,renewDate){
+                    var car = CarFactory.createCar(make,model,year);
+                    carRecordDataBase[tag] = {
+                        "owner":owner,
+                        "renewDate":renewDate,
+                        "car":car
+                    };
+                },
+                "getRenewDate":function(tag,newRenewDate){
+                    carRecordDataBase[tag] = newRenewDate;
+                }
+            };
+        })();
+
+        var arr = [];
+        console.time("测试性能");
+        for(var i = 0;i < 5000000;i ++){
+            //  享受模式的测试
+            arr.push(CarRecordManage.addCarRecord("上海大众","凌渡","2014-04-06","小宋","苏A·888888","2014-05-09"));
+        }
+        console.timeEnd("测试性能");
+        //  运行时间6秒左右,但是内存减少
+
+    </script>
+</head>
+<body>
+</body>
+</html>

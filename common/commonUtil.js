@@ -144,6 +144,7 @@
         }
     };
 
+//  数据相关的处理
     commonUtil.dataUtil = {
         /**
          * @param arg

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script type="text/javascript">
+        /**
+         *  单体模式(singleton)
+         *  3、惰性单体(和闭包单体有一些相似,性能方面优于闭包单体)
+         */
+
+        var EXT = {};
+        //  顶层命名空间
+
+        EXT.Base = (function(){
+
+            var uniqInstance;
+            //  定义私有变量,默认为undefined
+
+            function init(){
+                var name = "EXT",
+                    version = "1.0.1",
+                    author = "MrSon";
+                function _method1(){
+                    return 1;
+                }
+                function _method2(){
+                    return 2;
+                }
+                //  定义私有成员变量
+
+                return {
+                    "name":name,
+                    "version":version,
+                    "author":author,
+                    "method1":_method1(),
+                    "method2":_method2()
+                };
+
+            }
+
+            return {
+                getInstance:function(){
+                    if(!uniqInstance){
+                        uniqInstance = init();
+                    }
+                    //  当前单体不存在,创建单体
+                    return uniqInstance;
+                }
+            };
+        })();
+
+        console.log(EXT.Base.getInstance());
+
+    </script>
+</head>
+<body>
+
+</body>
+</html>
